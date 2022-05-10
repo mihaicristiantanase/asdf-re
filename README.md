@@ -10,7 +10,8 @@ The same channel used for communicating with the remote Lisp is used for transfe
 ;; install "asdf-re" by cloning to <quicklisp_dir>/local-projects
 ;; then, in a Lisp
 (ql:quickload "asdf-re")
-(asdf-re:reconstruct #p"/path/to/local/asdf/system/directory" #p"/path/to/remote/quicklisp/local-projects/")
+(asdf-re:reconstruct #p"/path/to/local/asdf/system/directory"
+                     #p"/path/to/remote/quicklisp/local-projects/")
 
 ;; the result is a lisp file located at "/tmp/<asdf-system-name>.lisp".
 ```
