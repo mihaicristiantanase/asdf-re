@@ -27,8 +27,7 @@
 
   (let* ((system-name (car (last (pathname-directory path))))
          (re-system-name (fmt "~a~a/" target system-name))
-         (flisp (pathname (fmt "/tmp/~a.lisp" system-name)))
-         )
+         (flisp (pathname (fmt "/tmp/~a.lisp" system-name))))
     (with-lisp-file (flisp)
       (wl (fmt "(ql:quickload \"shell\")"))
       (wl (fmt "(shell:run t \"rm\" \"-rf\" \"~a\")" re-system-name))
@@ -45,4 +44,4 @@
                            do (wl (fmt "  (format f \"~a~~%\")"
                                     (cl-ppcre:regex-replace-all "\"" line "\\\"")))))
                    (wl ")")))
-        (format t "ASDF system reconstruction done!")))))
+        (format t "ASDF system reconstruction done at ~a" flisp)))))
