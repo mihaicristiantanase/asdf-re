@@ -8,4 +8,5 @@
   :serial t
   :depends-on (#:shell #:cl-ppcre)
   :components ((:file "package")
+               (:file "utils")
                (:file "asdf-re")))

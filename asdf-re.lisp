@@ -3,14 +3,10 @@
 (in-package #:asdf-re)
 
 (defparameter *lisp-files-scanner*
-  (cl-ppcre:create-scanner ".*\\.(lisp|asd)$" :case-insensitive-mode t))
+  (cl-ppcre:create-scanner "^[^.].*\\.(lisp|asd)$" :case-insensitive-mode t))
 
-(defun has-suffix (s suffix)
-  (= (or (search suffix s :from-end t) -1)
-     (- (length s) (length suffix))))
-
-(defmacro fmt (format &body args)
-  `(format nil ,format ,@args))
+(defun valid-lisp-file? (path)
+  (cl-ppcre:scan *lisp-files-scanner* (fname path)))
 
 (defmacro with-lisp-file ((path) &body rest)
   (let ((stream (gensym)))
@@ -33,10 +29,10 @@
       (wl (fmt "(shell:run t \"rm\" \"-rf\" \"~a\")" re-system-name))
       (wl (fmt "(shell:run t \"mkdir\" \"-p\" \"~a\")" re-system-name))
       (let ((files (remove-if-not
-                    #'(lambda (it) (cl-ppcre:scan *lisp-files-scanner* (namestring it)))
+                    #'(lambda (it) (valid-lisp-file? it))
                     (uiop:directory-files path))))
         (loop for f in files
-              do (let ((fname (car (last (cl-ppcre:split "/" (namestring f))))))
+              do (let ((fname (fname f)))
                    (wl (fmt "~%(with-open-file (f \"~a~a\" :direction :output)" re-system-name fname))
                    (with-open-file (fsrc f)
                      (loop for line = (read-line fsrc nil nil)
