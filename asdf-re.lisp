@@ -15,6 +15,12 @@
                 (format ,stream "~a~%" line)))
          ,@rest))))
 
+(defun escape4format (s)
+  (loop for tr in '(("\"" . "\\\"")
+                    ("~" . "~~"))
+        do (setf s (cl-ppcre:regex-replace-all (car tr) s (cdr tr)))
+        finally (return s)))
+
 (defun reconstruct (path target)
   (unless (has-suffix (namestring path) "/")
     (error "Missing \"/\" for ~a" path))
@@ -37,7 +43,6 @@
                    (with-open-file (fsrc f)
                      (loop for line = (read-line fsrc nil nil)
                            while line
-                           do (wl (fmt "  (format f \"~a~~%\")"
-                                    (cl-ppcre:regex-replace-all "\"" line "\\\"")))))
+                           do (wl (fmt "  (format f \"~a~~%\")" (escape4format line)))))
                    (wl ")")))
         (format t "ASDF system reconstruction done at ~a" flisp)))))
