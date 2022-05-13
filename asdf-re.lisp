@@ -16,8 +16,9 @@
          ,@rest))))
 
 (defun escape4format (s)
-  (loop for tr in '(("\"" . "\\\"")
-                    ("~" . "~~"))
+  (loop for tr in '(("~" . "~~")
+                    ("\\" . "\\\\\\")
+                    ("\"" . "\\\""))
         do (setf s (cl-ppcre:regex-replace-all (car tr) s (cdr tr)))
         finally (return s)))
 
